@@ -28,6 +28,9 @@
   "base.viafabricplus.name": "Name",
   "base.viafabricplus.password": "Kennwort",
   "base.viafabricplus.login": "Anmeldung",
+  "base.viafabricplus.code": "Code",
+  "base.viafabricplus.accept": "Akzeptieren",
+  "base.viafabricplus.refresh": "Aktualisieren",
 
   "setting_group_name.viafabricplus.authentication": "Authentifizierung",
   "setting_group_name.viafabricplus.visual": "Visuell",
@@ -37,10 +40,12 @@
 
   "screen.viafabricplus.force_version": "Version setzen",
   "screen.viafabricplus.report_issues": "Probleme melden",
-  "screen.viafabricplus.server_list": "Server-Listen",
+  "screen.viafabricplus.server_list": "Serverlisten",
   "screen.viafabricplus.classicube_login": "Classicube-Anmeldung",
   "screen.viafabricplus.classicube_mfa": "Classicube MFA",
   "screen.viafabricplus.settings": "Einstellungen",
+  "screen.viafabricplus.bedrock_realms": "Bedrock Realms",
+  "screen.viafabricplus.accept_invite": "Einladung akzeptieren",
 
   "general_settings.viafabricplus.save_selected_protocol_version": "Ausgewählte Protokollversion speichern",
   "general_settings.viafabricplus.extra_information_in_debug_hud": "Zusätzliche Informationen im Debug-HUD anzeigen",
@@ -57,6 +62,7 @@
 
   "bedrock_settings.viafabricplus.click_to_set_bedrock_account": "Klicke, um das Konto für die Bedrock Edition festzulegen",
   "bedrock_settings.viafabricplus.replace_default_port": "Standard-Port in der Serverliste ersetzen",
+  
   "debug_settings.viafabricplus.queue_config_packets": "Konfigurationspakete in die Warteschlange stellen",
   "debug_settings.viafabricplus.disable_sequencing": "Sequenzierung deaktivieren",
   "debug_settings.viafabricplus.smooth_out_merchant_screens": "Händlerbildschirme glätten",
@@ -94,6 +100,7 @@
   "visual_settings.viafabricplus.disable_server_pinging": "Server-Pinging deaktivieren",
   "visual_settings.viafabricplus.sideways_backwards_walking": "Seitliches Rückwärtsgehen",
   "visual_settings.viafabricplus.enable_legacy_tablist": "Legacy-Spielerliste aktivieren",
+  "visual_settings.viafabricplus.tilt_item_positions": "Item Neigungen ändern",
   "visual_settings.viafabricplus.hide_furnace_recipe_book": "Ofenrezeptbuch ausblenden",
   "visual_settings.viafabricplus.hide_crafting_recipe_book": "Handwerksrezeptbuch ausblenden",
   "visual_settings.viafabricplus.hide_modern_jigsaw_screen_features": "Moderne Verbundblock-Bildschirmeigenschaften ausblenden",
@@ -145,6 +152,18 @@
   "minecraftauth_library.viafabricplus.xbldevicetoken": "Authentifizierung des Geräts mit Xbox Live...",
   "minecraftauth_library.viafabricplus.xblsisuauthentication": "Authentifizierung mit Xbox Live über SISU...",
   "minecraftauth_library.viafabricplus.mcchain": "Authentifizierung mit den Minecraft-Diensten...",
-  "minecraftauth_library.viafabricplus.xblxststoken": "Anfordern eines XSTS-Tokens...",
-  "minecraftauth_library.viafabricplus.playfabtoken": "Authentifizierung mit PlayFab..."
+  "minecraftauth_library.viafabricplus.xblxststoken": "Anfordern des XSTS-Tokens...",
+  "minecraftauth_library.viafabricplus.playfabtoken": "Authentifizierung mit PlayFab...",
+  "minecraftauth_library.viafabricplus.realmsxsts": "Anfordern des Realms XSTS Token...",
+  
+  "bedrock_realms.viafabricplus.warning": "Für diese Funktion muss in den Einstellungen ein Bedrock-Edition-Konto eingerichtet werden!",
+  "bedrock_realms.viafabricplus.availability_check": "Überprüfe Verfügbarkeit...",
+  "bedrock_realms.viafabricplus.no_worlds": "Keine Welten gefunden :(",
+  "bedrock_realms.viafabricplus.unavailable": "Dein ViaFabricPlus ist veraltet und nicht kompatibel mit Minecraft Realms.",
+  "bedrock_realms.viafabricplus.error": "Es ist ein Fehler aufgetreten, weitere Informationen findest du in den Protokollen",
+  "bedrock_realms.viafabricplus.join": "Realm beitreten",
+  "bedrock_realms.viafabricplus.leave": "Realm verlassen",
+  "bedrock_realms.viafabricplus.invite": "Einladungscode akzeptieren",
+  "bedrock_realms.viafabricplus.expired": "Der Realm ist abgelaufen",
+  "bedrock_realms.viafabricplus.incompatible": "Die Minecraft-Version des Realms ist entweder zu alt oder zu neu"
 }

@@ -19,13 +19,12 @@
 
 package de.florianmichael.viafabricplus.screen.base;
 
-import de.florianmichael.classic4j.BetaCraftHandler;
 import de.florianmichael.viafabricplus.ViaFabricPlus;
 import de.florianmichael.viafabricplus.screen.VFPScreen;
 import de.florianmichael.viafabricplus.screen.classic4j.BetaCraftScreen;
 import de.florianmichael.viafabricplus.screen.classic4j.ClassiCubeLoginScreen;
 import de.florianmichael.viafabricplus.screen.classic4j.ClassiCubeServerListScreen;
-import net.minecraft.client.gui.DrawContext;
+import de.florianmichael.viafabricplus.screen.realms.BedrockRealmsScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
@@ -33,8 +32,6 @@ import net.minecraft.text.Text;
 public class ServerListScreen extends VFPScreen {
 
     public static final ServerListScreen INSTANCE = new ServerListScreen();
-
-    private ButtonWidget betaCraftButton;
 
     public ServerListScreen() {
         super(Text.translatable("screen.viafabricplus.server_list"), true);
@@ -48,49 +45,39 @@ public class ServerListScreen extends VFPScreen {
         // ClassiCube
         final boolean loggedIn = ViaFabricPlus.global().getSaveManager().getAccountsSave().getClassicubeAccount() != null;
 
-        ButtonWidget.Builder classiCubeBuilder = ButtonWidget.builder(ClassiCubeServerListScreen.INSTANCE.getTitle(), button -> {
+        final ButtonWidget.Builder classiCubeBuilder = ButtonWidget.builder(ClassiCubeServerListScreen.INSTANCE.getTitle(), button -> {
             if (!loggedIn) {
                 ClassiCubeLoginScreen.INSTANCE.open(this);
                 return;
             }
             ClassiCubeServerListScreen.INSTANCE.open(this);
-        }).position(this.width / 2 - 50, this.height / 2 - 25).size(98, 20);
+        }).position(this.width / 2 - 100, this.height / 2 - 25).size(200, 20);
         if (!loggedIn) {
-            classiCubeBuilder = classiCubeBuilder.tooltip(Tooltip.of(Text.translatable("classicube.viafabricplus.warning")));
+            classiCubeBuilder.tooltip(Tooltip.of(Text.translatable("classicube.viafabricplus.warning")));
         }
         this.addDrawableChild(classiCubeBuilder.build());
 
-        ButtonWidget.Builder betaCraftBuilder = ButtonWidget.builder(BetaCraftScreen.INSTANCE.getTitle(), button -> {
-            if (BetaCraftScreen.SERVER_LIST == null) {
-                betaCraftButton = button;
-
-                BetaCraftHandler.requestV2ServerList(serverList -> {
-                    BetaCraftScreen.SERVER_LIST = serverList;
-
-                    BetaCraftScreen.INSTANCE.open(this);
-                }, throwable -> showErrorScreen(BetaCraftScreen.INSTANCE.getTitle(), throwable, this));
-
-            } else {
-                BetaCraftScreen.INSTANCE.open(this);
-            }
-        }).position(this.width / 2 - 50, this.height / 2 - 25 + 20 + 3).size(98, 20);
+        final ButtonWidget.Builder betaCraftBuilder = ButtonWidget.builder(BetaCraftScreen.INSTANCE.getTitle(), button -> {
+            BetaCraftScreen.INSTANCE.open(this);
+        }).position(this.width / 2 - 100, this.height / 2 - 25 + 20 + 3).size(200, 20);
         if (BetaCraftScreen.SERVER_LIST == null) {
-            betaCraftBuilder = betaCraftBuilder.tooltip(Tooltip.of(Text.translatable("betacraft.viafabricplus.warning")));
+            betaCraftBuilder.tooltip(Tooltip.of(Text.translatable("betacraft.viafabricplus.warning")));
         }
         this.addDrawableChild(betaCraftBuilder.build());
-    }
 
-    @Override
-    public void tick() {
-        if (betaCraftButton != null) {
-            betaCraftButton.setMessage(Text.translatable("betacraft.viafabricplus.loading"));
+        final ButtonWidget.Builder bedrockRealmsBuilder = ButtonWidget.builder(BedrockRealmsScreen.INSTANCE.getTitle(), button -> {
+            BedrockRealmsScreen.INSTANCE.open(this);
+        }).position(this.width / 2 - 100, this.height / 2 - 25 + 40 + 6).size(200, 20);
+        final boolean missingAccount = ViaFabricPlus.global().getSaveManager().getAccountsSave().getBedrockAccount() == null; // Only check for presence, later validate
+        if (missingAccount) {
+            bedrockRealmsBuilder.tooltip(Tooltip.of(Text.translatable("bedrock_realms.viafabricplus.warning")));
         }
-    }
 
-    @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
-        this.renderTitle(context);
+        final ButtonWidget bedrockRealmsButton = bedrockRealmsBuilder.build();
+        this.addDrawableChild(bedrockRealmsButton);
+        if (missingAccount) {
+            bedrockRealmsButton.active = false;
+        }
     }
 
 }

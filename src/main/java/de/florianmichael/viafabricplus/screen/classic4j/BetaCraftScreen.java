@@ -19,6 +19,7 @@
 
 package de.florianmichael.viafabricplus.screen.classic4j;
 
+import de.florianmichael.classic4j.BetaCraftHandler;
 import de.florianmichael.classic4j.model.betacraft.BCServerInfoSpec;
 import de.florianmichael.classic4j.model.betacraft.BCServerList;
 import de.florianmichael.classic4j.model.betacraft.BCVersionCategory;
@@ -26,15 +27,12 @@ import de.florianmichael.viafabricplus.screen.VFPList;
 import de.florianmichael.viafabricplus.screen.VFPListEntry;
 import de.florianmichael.viafabricplus.screen.VFPScreen;
 import de.florianmichael.viafabricplus.screen.settings.TitleRenderer;
+import de.florianmichael.viafabricplus.util.ConnectionUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmLinkScreen;
-import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
-import net.minecraft.client.gui.screen.option.ControlsListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.network.ServerAddress;
-import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -53,26 +51,31 @@ public class BetaCraftScreen extends VFPScreen {
 
     @Override
     protected void init() {
+        super.init();
+        if (SERVER_LIST != null) {
+            createView();
+            return;
+        }
+        setupSubtitle(Text.translatable("betacraft.viafabricplus.loading"));
+        BetaCraftHandler.requestV2ServerList(serverList -> {
+            BetaCraftScreen.SERVER_LIST = serverList;
+            createView();
+        }, throwable -> showErrorScreen(BetaCraftScreen.INSTANCE.getTitle(), throwable, this));
+    }
+
+    private void createView() {
         this.setupSubtitle(Text.of(BETA_CRAFT_SERVER_LIST_URL), ConfirmLinkScreen.opening(this, BETA_CRAFT_SERVER_LIST_URL));
         this.addDrawableChild(new SlotList(this.client, width, height, 3 + 3 /* start offset */ + (textRenderer.fontHeight + 2) * 3 /* title is 2 */, -5, (textRenderer.fontHeight + 2) * 3));
 
-        this.addDrawableChild(ButtonWidget.builder(ControlsListWidget.KeyBindingEntry.RESET_TEXT, button -> {
-            SERVER_LIST = null;
-            client.setScreen(prevScreen);
-        }).position(width - 98 - 5, 5).size(98, 20).build());
-
-        super.init();
+        this.addRefreshButton(() -> SERVER_LIST = null);
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context, mouseX, mouseY, delta);
-        super.render(context, mouseX, mouseY, delta);
-
-        this.renderTitle(context);
+    protected boolean subtitleCentered() {
+        return SERVER_LIST == null;
     }
 
-    public static class SlotList extends VFPList<VFPListEntry> {
+    public static class SlotList extends VFPList {
         private static double scrollAmount;
 
         public SlotList(MinecraftClient minecraftClient, int width, int height, int top, int bottom, int entryHeight) {
@@ -116,10 +119,7 @@ public class BetaCraftScreen extends VFPScreen {
 
         @Override
         public void mappedMouseClicked(double mouseX, double mouseY, int button) {
-            final ServerAddress serverAddress = ServerAddress.parse(server.socket());
-            final ServerInfo entry = new ServerInfo(server.name(), serverAddress.getAddress(), ServerInfo.ServerType.OTHER);
-
-            ConnectScreen.connect(MinecraftClient.getInstance().currentScreen, MinecraftClient.getInstance(), serverAddress, entry, false, null);
+            ConnectionUtil.connect(server.name(), server.socket());
             super.mappedMouseClicked(mouseX, mouseY, button);
         }
 

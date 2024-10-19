@@ -23,20 +23,17 @@ import de.florianmichael.classic4j.ClassiCubeHandler;
 import de.florianmichael.classic4j.api.LoginProcessHandler;
 import de.florianmichael.classic4j.model.classicube.server.CCServerInfo;
 import de.florianmichael.viafabricplus.ViaFabricPlus;
-import de.florianmichael.viafabricplus.injection.access.IServerInfo;
 import de.florianmichael.viafabricplus.protocoltranslator.impl.provider.vialegacy.ViaFabricPlusClassicMPPassProvider;
 import de.florianmichael.viafabricplus.screen.VFPList;
 import de.florianmichael.viafabricplus.screen.VFPListEntry;
 import de.florianmichael.viafabricplus.screen.VFPScreen;
 import de.florianmichael.viafabricplus.settings.impl.AuthenticationSettings;
+import de.florianmichael.viafabricplus.util.ConnectionUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.network.ServerAddress;
-import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.raphimc.vialegacy.api.LegacyProtocolVersion;
@@ -77,16 +74,14 @@ public class ClassiCubeServerListScreen extends VFPScreen {
             close();
             ViaFabricPlus.global().getSaveManager().getAccountsSave().setClassicubeAccount(null);
             SERVER_LIST.clear();
-        }).position(width - 98 - 5, 5).size(98, 20).build());
+        }).position(width - 60 - 5, 5).size(60, 20).build());
 
         super.init();
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context, mouseX, mouseY, delta);
         super.render(context, mouseX, mouseY, delta);
-        this.renderTitle(context);
 
         final var account = ViaFabricPlus.global().getSaveManager().getAccountsSave().getClassicubeAccount();
         if (account != null) {
@@ -95,7 +90,7 @@ public class ClassiCubeServerListScreen extends VFPScreen {
         }
     }
 
-    public static class SlotList extends VFPList<VFPListEntry> {
+    public static class SlotList extends VFPList {
         private static double scrollAmount;
 
         public SlotList(MinecraftClient minecraftClient, int width, int height, int top, int bottom, int entryHeight) {
@@ -116,7 +111,6 @@ public class ClassiCubeServerListScreen extends VFPScreen {
         }
     }
 
-
     public static class ServerSlot extends VFPListEntry {
         private final CCServerInfo classiCubeServerInfo;
 
@@ -131,16 +125,10 @@ public class ClassiCubeServerListScreen extends VFPScreen {
 
         @Override
         public void mappedMouseClicked(double mouseX, double mouseY, int button) {
-            final ServerAddress serverAddress = ServerAddress.parse(classiCubeServerInfo.ip() + ":" + classiCubeServerInfo.port());
-            final ServerInfo entry = new ServerInfo(classiCubeServerInfo.name(), serverAddress.getAddress(), ServerInfo.ServerType.OTHER);
+            final boolean selectCPE = AuthenticationSettings.global().automaticallySelectCPEInClassiCubeServerList.getValue();
             ViaFabricPlusClassicMPPassProvider.classicubeMPPass = classiCubeServerInfo.mpPass();
 
-            if (AuthenticationSettings.global().automaticallySelectCPEInClassiCubeServerList.getValue()) {
-                ((IServerInfo) entry).viaFabricPlus$forceVersion(LegacyProtocolVersion.c0_30cpe);
-            }
-
-            ConnectScreen.connect(MinecraftClient.getInstance().currentScreen, MinecraftClient.getInstance(), serverAddress, entry, false, null);
-            super.mappedMouseClicked(mouseX, mouseY, button);
+            ConnectionUtil.connect(classiCubeServerInfo.name(), classiCubeServerInfo.ip() + ":" + classiCubeServerInfo.port(), selectCPE ? LegacyProtocolVersion.c0_30cpe : null);
         }
 
         @Override
